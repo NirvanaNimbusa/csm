@@ -1,0 +1,150 @@
+\chapter{Описание программной модели}
+Программная модель представляет собой консольное приложение, предназначенное для моделирования и анализа 
+системы передачи данных при использовании каскадных кодов. Приложение имеет интерфейс командной строки и 
+позволяет выполнять конфигурацию модели перед ее запуском путем указания параметров используемых кодов. В 
+случае, если данные параметры не указываются, модель конфигурируется параметрами по умолчанию. Полный набор 
+опций разработанной модели представлен в Листинге~\ref{lst_01}.
+
+\begin{lstlisting}[caption={Вывод информации о доступных опциях}, label={lst_01}]
+Administrator@DNAPC /cygdrive/d/SUAI/8sem/Alexeev/msvs10/scm_new/csm/build/bin/Release/app
+$ ./app --h
+Usage: csm [-uv] [-g <int>] [-l <int>] [-e <int>] [-d <int>] [-b <double>] [-p <string>] <file> [<file>]... [--help] [--version]
+Program performs simulation of data transfer in communication system. The system is structured in the following manner:
+[Transmitter]->[BCH encoder]->[Convolutional Encoder]->[Binary Symmetric Channel]->[Viterbi Decoder]->[BCH decoder]->[Receiver]
+The following options are available:
+  -g, --galois=<int>        define Evariste Galois field degree (between 2..20, default is 4)
+  -l, --length=<int>        define BCH code length (default is 15)
+  -e, --errors=<int>        define BCH code error correction property (default is 3)
+  -d, --dbuffer=<int>       define internal buffer size of trellis node in Viterbi Decoder (default is 2 frames)
+  -b, --ber=<double>        define channel Bit Error Rate (default is 1e-12)
+  -p, --postfix=<string>    define out file postfix (default is 'transferred')
+  <file>                    define input file(s)
+  -u, --gui                 run under GUI
+  -v, --verbose, --debug    verbose messages
+  --help                    print this help and exit
+  --version                 print version information and exit
+\end{lstlisting}
+
+В качестве исходного файла, предназначенного для его использования при моделировании процесса передачи 
+данных, указывается потенциально любой файл. Следует учесть, что в случае, если исходный файл имеет размер, 
+больший чем 1МБ, то процесс моделирования затянется на достаточное время. Это связано с тем, что при 
+реализации данной модели акцент на оптимизацию по времени выполнения прочеса симуляции, размеру потребляемой 
+памяти приложением, оценке производительности приложения в целом, не делался. Главной задачей было убедиться 
+в работоспособности модели для получения с нее результатов моделирования.
+
+\chapter{Запуск программной модели}
+Генерируемая инормация после после окончания моделирования представлена в Листинге~\ref{lst_02}.
+Характерной особенностью является автоматическое тестирвоание на предмет корректности принятых данных
+на удаленной стороне.
+
+\begin{lstlisting}[caption={Вывод информации после окончания моделирования}, label={lst_02}]
+Administrator@DNAPC /cygdrive/d/SUAI/8sem/Alexeev/msvs10/scm_new/TeX/inc/img/chapter_4
+$ ./app -b 0.0001 img_test_01.gif
+Performing 'img_test_01.gif'
+Progress: 100%
+
+... transmitter stopped
+... transmitter settings ...
+data size: 156456
+frame size: 5
+... transmitter statistics ...
+transmitted frames: 31292
+transmitted bits: 156460
+
+... receiver stopped
+... receiver settings ...
+data size: 156456
+frame size: 5
+... receiver statistics ...
+received frames: 31292
+valid frames: 31292 (100.00%)
+invalid frames: 0 (0.00%)
+received bits: 156460
+valid bits: 156460 (100.00%)
+invalid bits: 0 (0.00%)
+BER: 0.000000
+FER: 0.000000
+
+... bch encoder stopped
+... bch encoder settings ...
+galois field degree: 4
+code length: 15
+information symbols quantity: 5
+error correction property: 3
+... bch encoder statistics ...
+encoded frames: 31292
+generated codewords: 31292
+transmitted bits: 469380
+
+... bch decoder stopped
+... bch decoder settings ...
+galois field degree: 4
+code length: 15
+information symbols quantity: 5
+error correction property: 3
+... bch decoder statistics ...
+received bits: 469380
+received bits (valid): 469380
+received bits (corrupted): 0
+received codewords: 31292
+received codewords (valid): 31292
+received codewords (corrupted): 0
+generated frames: 31292
+
+... cnv encoder stopped
+... cnv encoder settings ...
+quantity of registers: 2
+codeword length: 30
+... cnv encoder statistics ...
+encoded frames: 31292
+generated codewords: 31292
+transmitted bits: 938760
+
+... cnv decoder stopped
+... cnv decoder settings ...
+decoded sequence buffer size: 31
+... cnv decoder statistics ...
+delayed frames: 2
+received bits: 938820
+received bits (valid): 935880
+received bits (corrupted): 98
+received codewords: 31294
+received codewords (valid): 31196
+received codewords (corrupted): 98
+generated frames: 31294
+
+... channel bs stopped
+... channel bs settings ...
+BER: 0.000100
+... channel bs statistics ...
+bits transferred: 938820
+bits corrupted: 98 (0.01%)
+test: OK
+\end{lstlisting}
+
+\section{Используемый инcтрументарий и техника разработки}
+При построении модели системы передачи информации использовалась интегрированная среда разработки Microsoft 
+Visual Studio 2010. Разработка велась преимущественно на языке высокого уровня С с добавлением конструкций, 
+характерных для языка С++. При построении модели применялось компонентно-ориентированное программирование --- 
+парадигма программирования, ключевой фигурой которой является компонент. В качестве такого компонента 
+выступает библиотека, реализующая необходимый функционал, и обладающая своим интерфейсом. Несмотря на широкое 
+использование данного подхода при построении систем на С++, указанный подход являлся основой для построения 
+системы в целом. В результате изменения в существующую систему вносятся путём создания новых компонентов в 
+дополнение или в качестве замены ранее существующих. Особое значение было уделено интерфейсам компонентов и 
+технике, позволяющей строить гибкие системы и использовать большинство широко распространенных паттернов 
+проектирования в случае использования языка С.
+
+При реализации модели автор старался применять разработку через тестирование (test-driven development, TDD) и 
+модульное тестирование --- техники разработки программного обеспечения, которые основываются на повторении 
+очень коротких циклов разработки. Ключевыми моментами являются частые релизы, рефакторинг, контроль 
+архитектуры.
+
+\section{Архитектура модели}
+Модель реализуется в виде набора компонентов, представленных в виде статических библиотек, каждая из которых 
+решает свою, четко обозначенную задачу. Так, в проекте используются библиотеки, предназначенные для 
+кодирования/декодирования БЧХ-кодов, кодирования/декодирования сверточных кодов. Характерной особенностью 
+является разнесение ответственности компонентов и разбиение кодеров и декодеров на кодеры переднего плана и 
+кодеры заднего плана. Такая практика позволяет контролировать архитектуру отдельных компонентов библиотеки и 
+гибко управлять интерфейсом компонентов. Более того, практика дает возможность гибкого модифицирования или же 
+замены алгоритма работы компонента заднего плана. Помимо этого, имеются библиотеки, служащие для 
+моделирования канала передачи данных, тестового окружения.

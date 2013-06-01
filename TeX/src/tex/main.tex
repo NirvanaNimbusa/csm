@@ -1,0 +1,46 @@
+%% Преамбула TeX-файла
+
+% 1. Стиль и язык
+\documentclass[utf8x, 12pt]{G7-32} % Стиль (по умолчанию будет 14pt)
+
+% Остальные стандартные настройки убраны в preamble-std.tex
+\include{preamble-std}
+\begin{document}
+\frontmatter % выключает нумерацию ВСЕГО; здесь начинаются ненумерованные главы: реферат, введение, глоссарий, сокращения и прочее
+
+\graphicspath{{../../inc/img/}}
+\newcommand{\deft}[1]{{\bf\emph{#1}}}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{theorem}{Теорема}[section]
+\newcommand{\ntheorem}[2]{\begin{theorem} \deft{(#1).} #2 \end{theorem}}
+
+% Команды \breakingbeforechapters и \nonbreakingbeforechapters
+% управляют разрывом страницы перед главами.
+% По-умолчанию страница разрывается.
+
+% \nobreakingbeforechapters
+% \breakingbeforechapters
+
+\include{0_abstract}
+\tableofcontents
+% Включает нумерацию глав и секций в документе ниже
+\mainmatter
+\include{1_abbrev}
+\include{2_introduction}
+\include{3_chapter_1}
+\include{4_chapter_2}
+\include{5_chapter_3}
+\include{6_chapter_4}
+% Здесь заканчивается нумерованная часть документа и начинаются ссылки и заключение
+\backmatter
+\include{7_conclusion}
+\include{8_biblio}
+%\appendix   % Тут идут приложения
+%\include{9_appendix1}
+%\include{10_appendix2}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
