@@ -51,36 +51,6 @@
 \begin{figure}[h]
 \begin{center}
 \begin{minipage}[h]{0.4\linewidth}
-\includegraphics[width=1\linewidth]{chapter_4/img_test_06_transferred_g_4_l_15_e_3_d_31_b_0_014176.png}
-\caption{g=4, l=15, e=3, d=31, b=0.014176}
-\label{img:experimcoded5}
-\end{minipage}
-\hfill 
-\begin{minipage}[h]{0.4\linewidth}
-\includegraphics[width=1\linewidth]{chapter_4/img_test_06_transferred_g_4_l_15_e_3_d_31_b_0_017011.png}
-\caption{g=4, l=15, e=3, d=31, b=0.017011}
-\label{img:experimcoded6}
-\end{minipage}
-\end{center}
-
-\begin{center}
-\begin{minipage}[h]{0.4\linewidth}
-\includegraphics[width=1\linewidth]{chapter_4/img_test_06_transferred_g_4_l_15_e_3_d_31_b_0_020413.png}
-\caption{g=4, l=15, e=3, d=31, b=0.020413}
-\label{img:experimcoded7}
-\end{minipage}
-\hfill 
-\begin{minipage}[h]{0.4\linewidth}
-\includegraphics[width=1\linewidth]{chapter_4/img_test_06_transferred_g_4_l_15_e_3_d_31_b_0_024496.png}
-\caption{g=4, l=15, e=3, d=31, b=0.024496}
-\label{img:experimcoded8}
-\end{minipage}
-\end{center}
-\end{figure}
-
-\begin{figure}[h]
-\begin{center}
-\begin{minipage}[h]{0.4\linewidth}
 \includegraphics[width=1\linewidth]{chapter_4/img_test_06_transferred_g_4_l_15_e_3_d_31_b_0_029395.png}
 \caption{g=4, l=15, e=3, d=31, b=0.029395}
 \label{img:experimcoded9}
@@ -119,80 +89,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Оценка частоты появления ошибок на удаленной стороне}
-На Рис.~\ref{img_06} показана зависимость $BER$ на приемнике от $BER$ в канале при условии, что размер буфера накопленной
-последовательности в узле решетки декодера Витерби составляет 1 фрейм (15 символов). На Рис.~\ref{img_07} и 
-Рис.~\ref{img_08} показаны аналогичные зависимости, но при увеличении размера буфера до 2 и 10 фреймов соответственно.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{chapter_4/matlab_img/dbuffer_1.png}
-\caption{Зависимость BER на приемнике от BER в канале, dbuffer=1}
-\label{img_06}
-\end{center}
-\end{figure}
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{chapter_4/matlab_img/dbuffer_2.png}
-\caption{Зависимость BER на приемнике от BER в канале, dbuffer=2}
-\label{img_07}
-\end{center}
-\end{figure}
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{chapter_4/matlab_img/dbuffer_10.png}
-\caption{Зависимость BER на приемнике от BER в канале, dbuffer=10}
-\label{img_08}
-\end{center}
-\end{figure}
-
-На Рис.~\ref{img_09} показаны указанные зависимости совместно. Можно наблюдать, что в целом размер буфера накопленной
-последовательности в узле решетки декодера Витерби не сильно влияет на поведение кривой.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{chapter_4/matlab_img/all.png}
-\caption{Зависимость BER на приемнике от BER в канале (все случаи)}
-\label{img_09}
-\end{center}
-\end{figure}
-
-На Рис.~\ref{img_10} показаны указанные зависимости совместно при низких значениях $BER$. На этих рисунках можно аналогично
-наблюдать, что в целом размер буфера накопленной последовательности в узле решетки декодера Витерби не сильно влияет на поведение кривой.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{chapter_4/matlab_img/all_01.png}
-\caption{Зависимость BER на приемнике от BER в канале (все случаи)}
-\label{img_10}
-\end{center}
-\end{figure}
-
-На Рис.~\ref{img_11} показаны указанные зависимости в узком промежутке $BER$. На этих рисунках уже можно наблюдать, что размер буфера
-накопленной последовательности в узле решетки декодера Витерби определенно влияет на поведение кривой. При увеличении размера
-буфера уменьшается значение $BER$ на приемнике удаленной стороны. Это происходит потому, что в данном случае декодер Витерби
-содержит большее количество накопленных символов для различных путей в решетке. Данные пути в этом случае с большей вероятностью
-начинаются в одном узле и разветвляются по прошествии большего числа шагов. Следовательно, вероятность выдачи корректного символа выше.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{chapter_4/matlab_img/all_02.png}
-\caption{Зависимость BER на приемнике от BER в канале (все случаи)}
-\label{img_11}
-\end{center}
-\end{figure}
+На Рис.~\ref{dependencies_all} показаны графики зависимостей логарифмическом масштабе $BER$ на приемнике от $BER$ в канале при условии,
+что размер буфера накопленной последовательности в узле решетки декодера Витерби составляет 1-10 фреймов (1 фрейм состоит из 15 символов).
 
 Для получения теоретических результатов и сравнения с ними результатов, полученных на практике был выполнен следующий
 эксперимент. Выполнялось моедлирование передачи данных при отключенном БЧХ-кодировании/декодировании, то есть использовалось
 только сверточное кодирование и декодирование по алгоритму Витерби. Данная конфигурация обусловлена тем, что достаточно
 просто (для использовавшегося сверточного кодера) построить верхнюю оценку зависимости $BER$ на приемнике от $BER$ в канале.
 
-Указанные зависимости в логарифмическом масштабе представлены на Рис.~\ref{img_12}. График черного цвета показывает кривую,
+График черного цвета показывает кривую,
 получающуюся в результате теоретических вычислений. Из данного рисунка можно наблюдать, что теоретический результат
 (верхняя граница) близок к результатам, полу-ченным благодаря моделированию.
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.8\linewidth]{chapter_4/matlab_img/all_log_theory.png}
-\caption{Верхняя граница и полученные на практике результаты (БЧХ-кодирование/декодирование не используется)}
-\label{img_12}
+\includegraphics[width=0.9\linewidth]{chapter_4/matlab_img/dependencies_all.png}
+\caption{Зависимости BER на приемнике от BER в канале}
+\label{dependencies_all}
 \end{center}
 \end{figure}
 
