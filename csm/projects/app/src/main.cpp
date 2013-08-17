@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: main.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -30,22 +30,19 @@ int app_run(int galois_field_degree,
 	int decoded_seq_buf_size_frames,
 	double channel_ber,
 	const char* file_postfix,
-	int gui,
-	int nbch,
+	int run_under_gui,
+	int cnv_only,
 	int v,
 	const char **infiles, int ninfiles)
 {
 	int i;
 
-	int run_under_gui = gui ? 1 : 0;
-	int not_use_bch = nbch;
-
 	for (i=0; i<ninfiles; i++)
 	{
-		printf("Performing \'%s\'\n", infiles[i]);
+		printf("Simulation of transfer \'%s\' data is started...\n", infiles[i]);
 		
-		if(not_use_bch)
-		kernel_run_01(galois_field_degree,
+		if(cnv_only)
+		kernel_run_cnv(galois_field_degree,
 			bch_code_length,
 			error_correction,
 			decoded_seq_buf_size_frames,
@@ -84,12 +81,20 @@ int main(int argc, char **argv)
 		"define channel Bit Error Rate (default is 1e-12)");
 	struct arg_str *file_postfix = arg_str0("p", "postfix", NULL, 
 		"define out file postfix (default is \'transferred\')");
-	struct arg_lit  *gui =     arg_lit0 ("u", "gui",                     "run under GUI");
-	struct arg_lit  *nbch    = arg_lit0 ("n", "nbch",                    "do not use bch- encoding/decoding");
-	struct arg_lit  *verbose = arg_lit0 ("v", "verbose,debug",           "verbose messages");
-	struct arg_lit  *help    = arg_lit0 (NULL,"help",                    "print this help and exit");
-	struct arg_lit  *version = arg_lit0 (NULL,"version",                 "print version information and exit");
-	struct arg_file *infiles = arg_filen(NULL, NULL,NULL,1,argc+2,       "define input file(s)");
+	struct arg_lit  *cnv_only = 
+		arg_lit0 ("c", "cnvonly",                "use only Convolutional encoding and Viterbi decoding");
+	//struct arg_lit  *bch_only = 
+	//	arg_lit0 ("x", "bchonly",                "use only BCH-encoding/decoding");
+	struct arg_lit  *run_under_gui =
+		arg_lit0 ("u", "gui",		             "run under GUI (additional GUI-application needed)");
+	struct arg_lit  *verbose = 
+		arg_lit0 ("v", "verbose,debug",          "verbose messages");
+	struct arg_lit  *help    = 
+		arg_lit0 ("h","help",                    "print this help and exit");
+	struct arg_lit  *version = 
+		arg_lit0 (NULL,"version",                "print version information and exit");
+	struct arg_file *infiles = 
+		arg_filen(NULL, NULL,NULL,1,argc+2,      "define input file(s)");
 	struct arg_end  *end     = arg_end(20);
 	void* argtable[] = {galois_field_degree,
 		bch_code_length,
@@ -98,8 +103,9 @@ int main(int argc, char **argv)
 		channel_ber,
 		file_postfix,
 		infiles,
-		gui,
-		nbch,
+		cnv_only,
+		//bch_only,
+		run_under_gui,
 		verbose,
 		help,
 		version,
@@ -145,8 +151,8 @@ int main(int argc, char **argv)
 	/* special case: '--version' takes precedence error reporting */
 	if (version->count > 0)
 	{
-		printf("%s - Communication System Modeling tool. v.1.0.\n",progname);
-		printf("May 2013, Pavel Morozkin (pavel.morozkin@guap.ru)\n");
+		printf("%s - Communication System Modeling tool. v.1.1.\n",progname);
+		printf("August 2013, Pavel Morozkin (pavel.morozkin@guap.ru)\n");
 		exitcode=0;
 		goto exit;
 	}
@@ -170,14 +176,15 @@ int main(int argc, char **argv)
 	}
 
 	/* normal case: take the command line options at face value */
-	exitcode = app_run(galois_field_degree->ival[0], 
+	exitcode = app_run(
+		galois_field_degree->ival[0], 
 		bch_code_length->ival[0],
 		error_correction->ival[0],
 		decoded_seq_buf_size_frames->ival[0],
 		channel_ber->dval[0],
 		file_postfix->sval[0],
-		gui->count,
-		nbch->count,
+		run_under_gui->count,
+		cnv_only->count,
 		verbose->count,
 		infiles->filename,
 		infiles->count);

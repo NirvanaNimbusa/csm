@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: trellis_t.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -140,15 +140,17 @@ void trellis_init (trellis_t const self)
 		(trellis_node_t*)malloc(sizeof(trellis_node_t*) * self->nodes_cluster_size);
 	self->nodes_cluster_of_current_time = 
 		(trellis_node_t*)malloc(sizeof(trellis_node_t*) * self->nodes_cluster_size);
-
-	/* init of all trellis nodes */
-	for (int i = 0; i < self->nodes_cluster_size; i++)
+	if(self->nodes_cluster_of_previous_time && self->nodes_cluster_of_current_time)
 	{
-		self->nodes_cluster_of_previous_time[i] = trellis_node_create(self->decoded_sequence_buffer_size);
-		self->nodes_cluster_of_current_time[i] = trellis_node_create(self->decoded_sequence_buffer_size);
+		/* init of all trellis nodes */
+		for (int i = 0; i < self->nodes_cluster_size; i++)
+		{
+			self->nodes_cluster_of_previous_time[i] = trellis_node_create(self->decoded_sequence_buffer_size);
+			self->nodes_cluster_of_current_time[i] = trellis_node_create(self->decoded_sequence_buffer_size);
+		}
+
+		trellis_setup(self);
 	}
-	
-	trellis_setup(self);
 }
 
 void trellis_reset(trellis_t self)
@@ -197,7 +199,7 @@ void trellis_destroy (trellis_t self)
 
 void trellis_print(trellis_t self)
 {
-	puts("dumping of trellis is started...");
+	puts("dumping of trellis is started- ");
 	puts("dumping of nodes cluster of previous time\n");
 	for (int i = 0; i < self->nodes_cluster_size; i++)
 	{
@@ -212,5 +214,5 @@ void trellis_print(trellis_t self)
 		trellis_node_print(self->nodes_cluster_of_current_time[i]);
 		printf_d("\n");
 	}
-	puts("dumping of trellis is finished...");
+	puts("dumping of trellis is finished- ");
 }

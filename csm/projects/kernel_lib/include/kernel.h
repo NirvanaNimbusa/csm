@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: kernel.h
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -43,7 +43,7 @@ int kernel_run(
 	char* input_file_name,
 	int gui_progress);
 
-int kernel_run_01(
+int kernel_run_cnv(
 	int galois_field_degree,
 	int bch_code_length,
 	int error_correction,

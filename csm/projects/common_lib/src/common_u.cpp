@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: common_u.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -25,12 +25,54 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <iostream>
+#include <iomanip>
+
+static int log_string_length = 50;
+
+static void strip_new_line(char *s)
+{
+	char *p = s;
+	int n;
+	while (*s)
+	{
+		n = strcspn(s, "\n");
+		strncpy(p, s, n);
+		p += n;
+		s += n + strspn(s+n, "\n");
+	}
+	*p = 0;
+}
+
 int log (FILE* stream, const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	//vprintf(format, args);
-	vfprintf(stream, format, args);
+/*
+	char *uri_field = "mail:username@example.com";
+	char username[64];
+	sscanf(uri_field, "mail:%63[^@]", username);
+	sscanf(uri_field, "%*[^:]:%63[^@]", username);
+*/
+	char message[128] = {0};
+	char data[128];
+	if(strchr(const_cast<char*>(format), '%'))
+	{
+		printf("- ");
+		if(sscanf(const_cast<char*>(format), "%127[^%]", message) != EOF)
+		{
+			fprintf(stream, message);
+			for (unsigned int i = 0; i < log_string_length - strlen(message); i++)
+				fprintf(stream, ".");
+			fprintf(stream, " ");
+			strcpy(data, strchr(const_cast<char*>(format), '%'));
+			strip_new_line(data);
+			vfprintf(stream, data, args);
+			printf("\n");
+		}
+	}
+	else
+		vfprintf(stream, format, args);
 	va_end(args);
 	return 0;
 }
@@ -50,7 +92,7 @@ int log3 (FILE* stream, const char* format, ...)
 	va_list args;
 	va_start(args, format);
 	//vprintf(format, args);
-	vfprintf(stream, format, args);
+	//vfprintf(stream, format, args);
 	va_end(args);
 	return 0;
 }
@@ -109,34 +151,48 @@ char* extend_out_file_postfix(
 	double ber
 	)
 {
-	const int extend_out_file_postfix_size = 100;
+	const int extend_out_file_postfix_size = 128;
 	char* extend_out_file_postfix = (char*)calloc(sizeof(char), extend_out_file_postfix_size);
-	if(extend_out_file_postfix_size == NULL)
-		xexit("extend_out_file_postfix: error during memory allocation");
+	if(extend_out_file_postfix)
+	{
+		char buffer [33];
 
-	char buffer [33];
+		strcat(extend_out_file_postfix, out_file_postfix);
 
-	strcat(extend_out_file_postfix, out_file_postfix);
+		strcat(extend_out_file_postfix, "_g_");
+		_itoa (galois_field_degree, buffer, 10);
+		strcat(extend_out_file_postfix, buffer);
 
-	strcat(extend_out_file_postfix, "_g_");
-	_itoa (galois_field_degree, buffer, 10);
-	strcat(extend_out_file_postfix, buffer);
+		strcat(extend_out_file_postfix, "_l_");
+		_itoa (bch_code_length, buffer, 10);
+		strcat(extend_out_file_postfix, buffer);
 
-	strcat(extend_out_file_postfix, "_l_");
-	_itoa (bch_code_length, buffer, 10);
-	strcat(extend_out_file_postfix, buffer);
+		strcat(extend_out_file_postfix, "_e_");
+		_itoa (error_correction, buffer, 10);
+		strcat(extend_out_file_postfix, buffer);
 
-	strcat(extend_out_file_postfix, "_e_");
-	_itoa (error_correction, buffer, 10);
-	strcat(extend_out_file_postfix, buffer);
-	
-	strcat(extend_out_file_postfix, "_d_");
-	_itoa (decoded_seq_buf_size_frames, buffer, 10);
-	strcat(extend_out_file_postfix, buffer);
+		strcat(extend_out_file_postfix, "_d_");
+		_itoa (decoded_seq_buf_size_frames, buffer, 10);
+		strcat(extend_out_file_postfix, buffer);
 
-	strcat(extend_out_file_postfix, "_b_");
-	sprintf(buffer, "%.6f", ber);
-	strcat(extend_out_file_postfix, buffer);
+		strcat(extend_out_file_postfix, "_b_");
+		sprintf(buffer, "%.6f", ber);
+		strcat(extend_out_file_postfix, buffer);
 
-	return extend_out_file_postfix;
+		return extend_out_file_postfix;
+	}
+	return NULL;
+}
+
+void loadbar(unsigned int x, unsigned int n, unsigned int w)
+{
+	if ( (x != n) && (x % (n/100) != 0) ) return;
+
+	float ratio    =  x/(float)n;
+	int c =  (int)(ratio * w);
+
+	std::cout << "Simulation in progress: "<< std::setw(3) << (int)(ratio*100) << "% [";
+	for ( int x=0; x<c; x++) std::cout << "=";
+	for (unsigned int x=c; x<w; x++) std::cout << " ";
+	std::cout << "]\r" << std::flush;
 }

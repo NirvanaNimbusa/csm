@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: bch_codec_kernel.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -308,7 +308,7 @@ bch_codec_kernel_vars_t generate_evariste_galois_field(bch_codec_kernel_vars_t v
  */
 /*
  * Compute the generator polynomial of a binary BCH encode. Fist generate the
- * cycle sets modulo 2**galois_field_degree - 1, cycle[][] =  (i, 2*i, 4*i, ..., 2^l*i). Then
+ * cycle sets modulo 2**galois_field_degree - 1, cycle[][] =  (i, 2*i, 4*i, - , 2^l*i). Then
  * determine those cycle sets that contain integers in the set of (code_distance-1)
  * consecutive integers {1..(code_distance-1)}. The generator polynomial is calculated
  * as the product of linear factors of the form (x+alpha^i), for every i in
@@ -318,7 +318,7 @@ bch_codec_kernel_vars_t generate_generator_polynom(bch_codec_kernel_vars_t vars)
 {
 	register int	ii, jj, ll, kaux;
 	register int	test, aux, nocycles, root, noterms, rdncy_symbols_q;
-	int             cycle[1024][21], size[1024], min[1024], zeros[1024];
+	static int             cycle[1024][21], size[1024], min[1024], zeros[1024];
 
 	/* Generate cycle sets modulo code_length_max, code_length_max = 2**galois_field_degree - 1 */
 	cycle[0][0] = 0;
@@ -364,7 +364,7 @@ bch_codec_kernel_vars_t generate_generator_polynom(bch_codec_kernel_vars_t vars)
 	
 	nocycles = jj;		/* number of cycle sets modulo code_length_max */
 
-	/* Search for roots 1, 2, ..., code_distance-1 in cycle sets */
+	/* Search for roots 1, 2, - , code_distance-1 in cycle sets */
 	kaux = 0;
 	rdncy_symbols_q = 0;
 	for (ii = 1; ii <= nocycles; ii++) 
@@ -493,8 +493,8 @@ void decode_bch(bch_codec_kernel_vars_t vars)
  */
 {
 	register int    i, j, u, q, t2, count = 0, syn_error = 0;
-	int             elp[1026][1024], code_distance[1026], l[1026], u_lu[1026], s[1025];
-	int             root[200], loc[200], /*err[1024],*/ reg[201];
+	static int             elp[1026][1024], code_distance[1026], l[1026], u_lu[1026], s[1025];
+	static int             root[200], loc[200], /*err[1024],*/ reg[201];
 
 	t2 = 2 * vars->error_correction;
 

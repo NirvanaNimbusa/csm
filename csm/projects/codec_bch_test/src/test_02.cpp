@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: test_02.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -23,8 +23,14 @@
 #include "common.h"
 #include "test_engine.h"
 #include "codec_bch.h"
+#include "channel_bs.h"
 
 #include <stdlib.h>
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
 
 void print_data(int* data, int data_size)
 {
@@ -49,16 +55,22 @@ int test_02()
 /************************************************************************/
 /* Параметры тестового окружения.                                       */
 /************************************************************************/
-	int data_size = (int)1e2;
+	int data_size = (int)1e5;
 	int* data_in = (int*)calloc(data_size, sizeof(int));
 	int* data_out = NULL;
 
 /************************************************************************/
 /* Параметры БЧХ-кодера                                                 */
 /************************************************************************/
-	int galois_field_degree = 4;
-	int code_length = 15;
-	int error_correction = 3;
+	int galois_field_degree = 8;
+	int code_length = 147;
+	int error_correction = 5;
+/************************************************************************/
+/* Параметры ДСК-канала                                                 */
+/************************************************************************/
+	double ber = 0.2;
+	int errors_quantity = 7;
+	FILE* flog = stderr;
 
 /************************************************************************/
 /* Создание программных компонентов.                                    */
@@ -66,11 +78,14 @@ int test_02()
 	bch_encoder_t bch_encoder = bch_encoder_create(log, galois_field_degree, code_length, error_correction);
 	bch_decoder_t bch_decoder = bch_decoder_create(log, galois_field_degree, code_length, error_correction);
 
+	//channel_bs_t channel_bs = channel_bs_create(flog, ber);
+	channel_bs_t channel_bs = channel_bs_create_q(flog, errors_quantity);
+
 	/* Получение длины фрейма данных, который может кодировать БЧХ-кодер. */
 	int frame_size = bch_encoder_get_frame_size(bch_encoder);
 	transmitter_t transmitter = transmitter_create(log, frame_size, data_in, data_size);
 	receiver_t receiver = receiver_create(log, frame_size, data_size);
-
+	
 /************************************************************************/
 /* Запуск программных компонентов.                                      */
 /************************************************************************/
@@ -80,9 +95,13 @@ int test_02()
 	bch_encoder->start(bch_encoder);
 	bch_decoder->start(bch_decoder);
 
+	channel_bs->start(channel_bs);
+
 /************************************************************************/
 /* Запуск цикла моделирования.                                          */
 /************************************************************************/
+	int sent_frames = 0;
+	int frames_to_sent = data_size/frame_size;
 L_loop:
 	/* Получение фрейма данных от передатчика. */
 	frame_t frame_in = transmitter->transmit_frame(transmitter);
@@ -90,15 +109,16 @@ L_loop:
 
 	frame_display(frame_in);
 
-	/* Кодирование фрейма данных БЧХ-кодером и получение кодового слова БЧХ-кода. */
-	codeword_t codeword_in = bch_encoder->encode(bch_encoder, frame_in);
 	frame_t frame_in_save = frame_create(frame_size);
 	frame_in_save = frame_cpy(frame_in_save, frame_in);
+
+	/* Кодирование фрейма данных БЧХ-кодером и получение кодового слова БЧХ-кода. */
+	codeword_t codeword_in = bch_encoder->encode(bch_encoder, frame_in);
 	codeword_display(codeword_in);
 
-	/* Эмуляция передачи кодового слова по каналу. */
+	/* Передача кодового слова сверточного кода по каналу. */
 	codeword_t codeword_out = codeword_create(codeword_in->xsize);
-	codeword_out = codeword_cpy(codeword_out, codeword_in);
+	codeword_out = channel_bs->transfer(channel_bs, codeword_in);
 	codeword_display(codeword_out);	
 
 	/* Декодирование кодового слова БЧХ-декодером и получение фрейма данных. */
@@ -107,6 +127,9 @@ L_loop:
 
 	/* Прием фрейма данных приемником. */
 	receiver->receive_frame(receiver, frame_out, frame_in_save);
+
+	loadbar(sent_frames++, frames_to_sent, 50);
+	
 	goto L_loop;
 
 L_Stop:
@@ -117,6 +140,8 @@ L_Stop:
 	receiver->stop(receiver);
 	bch_encoder->stop(bch_encoder);
 	bch_decoder->stop(bch_decoder);
+	channel_bs->stop(channel_bs);
+	printf("\n");
 
 	/* Получние переданных передатчиком данных от приемника. */
 	data_out = receiver_get_received_data(receiver);
@@ -136,6 +161,7 @@ L_Stop:
 	receiver_destroy(receiver);
 	bch_encoder_destroy(bch_encoder);
 	bch_decoder_destroy(bch_decoder);
+	channel_bs_destroy(channel_bs);
 
 	return 0;
 

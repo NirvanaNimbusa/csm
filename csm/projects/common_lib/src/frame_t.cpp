@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: frame_t.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -35,10 +35,13 @@ void frame_init (frame_t const self)
 frame_t frame_create (int size)
 {
 	frame_t self = (frame_t)malloc(sizeof(frame_base_t));
-	self->xsize = size;
 	if(self)
+	{
+		self->xsize = size;
 		frame_init(self);
-	return self;
+		return self;
+	}
+	return NULL;
 }
 
 void frame_deinit (frame_t self)
@@ -64,13 +67,14 @@ void frame_display(frame_t self)
 char* frame_to_str(frame_t self)
 {
 	char* str = (char*)malloc(sizeof(char) * self->xsize + 1);
-	int i;
-
-	for (i = 0; i < self->xsize; i++)
-		str[i] = self->xframe[i] ? '1' : '0';
-	str[i] = 0;
-
-	return str;
+	if(str)
+	{
+		int i;
+		for (i = 0; i < self->xsize; i++)
+			str[i] = self->xframe[i] ? '1' : '0';
+		str[i] = 0;
+		return str;
+	}
 }
 
 int frame_cmp (frame_t a, frame_t b)

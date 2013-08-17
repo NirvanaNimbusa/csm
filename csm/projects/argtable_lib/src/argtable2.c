@@ -845,7 +845,7 @@ void arg_print_syntax(FILE *fp, void **argtable, const char *suffix)
                     fprintf(fp, " [%s] [%s]",syntax,syntax);
                     break;
                 default:
-                    fprintf(fp, " [%s]...",syntax);
+                    fprintf(fp, " [%s]- ",syntax);
                     break;
                 }
             }
@@ -888,7 +888,7 @@ void arg_print_syntaxv(FILE *fp, void **argtable, const char *suffix)
                 fprintf(fp, " [%s] [%s]",syntax,syntax);
                 break;
             default:
-                fprintf(fp, " [%s]...",syntax);
+                fprintf(fp, " [%s]- ",syntax);
                 break;
             }
         }
@@ -960,7 +960,7 @@ void arg_print_formatted( FILE *fp, const unsigned lmargin, const unsigned rmarg
     unsigned line_end = textlen + 1;
     const unsigned colwidth = (rmargin - lmargin) + 1;
 
-    /* Someone doesn't like us... */
+    /* Someone doesn't like us-  */
     if ( line_end < line_start )
         { fprintf( fp, "%s\n", text ); }
 
@@ -1037,14 +1037,14 @@ void arg_print_glossary_gnu(FILE *fp, void **argtable )
 
             if ( !shortopts && longopts ) 
                 {
-                /* Indent trailing line by 4 spaces... */
+                /* Indent trailing line by 4 spaces-  */
                 memset( syntax, ' ', 4 );
                 *(syntax+4) = '\0';
                 }
 
             arg_cat_optionv(syntax,sizeof(syntax),shortopts,longopts,datatype,table[tabindex]->flag&ARG_HASOPTVALUE,", ");
 
-            /* If syntax fits not into column, print glossary in new line... */
+            /* If syntax fits not into column, print glossary in new line-  */
             if ( strlen(syntax) > 25 ) 
                 {
                 fprintf( fp, "  %-25s %s\n", syntax, "" );

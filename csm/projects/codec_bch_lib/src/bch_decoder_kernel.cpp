@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: bch_decoder_kernel.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -152,7 +152,8 @@ frame_t bch_decoder_kernel_decode (bch_decoder_kernel_t self, codeword_t codewor
 	//   printf_d("Succesful decoding\code_length");
 
 	frame_t frame = frame_create(bch_decoder_kernel_vars->inf_symbols_q);
-	for (int j = 0, i = bch_decoder_kernel_vars->code_length - bch_decoder_kernel_vars->inf_symbols_q; i < bch_decoder_kernel_vars->code_length; i++, j++)
+	unsigned int ind = bch_decoder_kernel_vars->code_length - bch_decoder_kernel_vars->inf_symbols_q;
+	for (int j = 0, i = ind; i < bch_decoder_kernel_vars->code_length; i++, j++)
 		frame->xframe[j] = bch_decoder_kernel_vars->received_codeword[i];
 	return frame;
 }

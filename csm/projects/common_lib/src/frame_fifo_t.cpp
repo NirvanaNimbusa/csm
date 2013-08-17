@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: frame_fifo_t.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -31,8 +31,9 @@ void frame_fifo_init (frame_fifo_t const self)
 {
 	self->length = 0;
 	self->fifo = (frame_t*)malloc(sizeof(frame_t) * self->fifo_size);
-	for (int i = 0; i < self->fifo_size; i++)
-		self->fifo[i] = frame_create(self->frame_size);
+	if(self->fifo)
+		for (int i = 0; i < self->fifo_size; i++)
+			self->fifo[i] = frame_create(self->frame_size);
 }
 
 frame_fifo_t frame_fifo_create(int fifo_size, int frame_size)

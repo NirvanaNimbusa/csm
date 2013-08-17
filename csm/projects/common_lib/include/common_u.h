@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: common_u.h
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -45,5 +45,6 @@ char* extend_out_file_postfix(
 	int decoded_seq_buf_size_frames,
 	double ber
 	);
+void loadbar(unsigned int x, unsigned int n, unsigned int w);
 
 #endif

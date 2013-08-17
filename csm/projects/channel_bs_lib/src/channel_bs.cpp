@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: channel_bs.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -35,6 +35,20 @@ channel_bs_t channel_bs_create(FILE* log, double ber)
 
 	self->ber = ber;
 	self->log = log;
+	self->channel_created_with_q = 0;
+
+	channel_bs_init(self);
+	return self;
+}
+
+channel_bs_t channel_bs_create_q(FILE* log, int errors_quantity)
+{
+	channel_bs_t self = (channel_bs_t)malloc(sizeof(channel_bs_base_t));
+	if(!self) return NULL;
+
+	self->errors_quantity = errors_quantity;
+	self->log = log;
+	self->channel_created_with_q = 1;
 
 	channel_bs_init(self);
 	return self;
@@ -84,7 +98,11 @@ int channel_bs_stop (channel_bs_t self)
 	log(self->log, "... channel bs stopped\n");
 
 	log(self->log, "... channel bs settings ...\n");
-	log(self->log, "CBER: %f\n", self->ber);
+	
+	if(self->channel_created_with_q)
+		log(self->log, "Number of errors generated for each codeword: %d\n", self->errors_quantity);
+	else
+		log(self->log, "CBER: %f\n", self->ber);
 
 	log(self->log, "... channel bs statistics ...\n");
 	log(self->log, "bits transferred: %d\n", self->bits_transferred_cnt);
@@ -103,6 +121,15 @@ codeword_t channel_bs_transfer (channel_bs_t self, codeword_t codeword)
 	codeword_t codeword_out = codeword_create(codeword->xsize);
 	int word_corrupted = 0;
 
+	if(self->channel_created_with_q)
+	{
+		codeword_out = codeword_cpy(codeword_out, codeword);
+		for (int i = 0; i < self->errors_quantity; i++)
+			codeword_out->xcodeword[i] = codeword_out->xcodeword[i] ? 0 : 1;
+		self->bits_transferred_cnt += codeword->xsize;
+		word_corrupted = 1;
+	}
+	else
 	for (int i = 0; i < codeword->xsize; i++)
 	{
 		codeword_out->xcodeword[i] = codeword->xcodeword[i];

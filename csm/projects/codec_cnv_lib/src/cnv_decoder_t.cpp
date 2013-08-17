@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: cnv_decoder_t.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -101,17 +101,17 @@ int cnv_decoder_stop(cnv_decoder_t self)
 
 int* get_next_2b_from_codeword(codeword_t codeword, int start_index)
 {
-	int* two_b = (int*)malloc(sizeof(int) * 2);
-
 	if (start_index >= codeword->xsize)
-	{
-		puts("Error");
 		return NULL;
-	}
 
-	two_b[0] = codeword->xcodeword[start_index];
-	two_b[1] = codeword->xcodeword[start_index+1];
-	return two_b;
+	int* two_b = (int*)malloc(sizeof(int) * 2);
+	if(two_b)
+	{
+		two_b[0] = codeword->xcodeword[start_index];
+		two_b[1] = codeword->xcodeword[start_index+1];
+		return two_b;
+	}
+	return NULL;
 }
 
 void print_2b(int* int_2b)
@@ -134,7 +134,7 @@ int cmp_2b(int* int_2b, char* char_2b)
 parents_t compute_parents_of_node (trellis_node_t* nodes_cluster_of_previous_time,
 	trellis_node_t trellis_node)
 {
-	parents_t parents;
+	parents_t parents = {0, 0};
 
 	int* state_value = trellis_node->state_value;
 
@@ -149,7 +149,7 @@ parents_t compute_parents_of_node (trellis_node_t* nodes_cluster_of_previous_tim
 		parents.second = nodes_cluster_of_previous_time[3];
 	} 
 	else
-		;	
+		xexit("compute_parents_of_node: error\n");
 
 	return parents;
 }

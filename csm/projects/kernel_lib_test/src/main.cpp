@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: main.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -32,6 +32,6 @@ int main(int argc, char **argv)
 	char* in_file = "test_files\\img_02.gif";
 	char* out_file_postfix = "transferred";
 	
-	return kernel_run_01(galois_field_degree, bch_code_length,
+	return kernel_run_cnv(galois_field_degree, bch_code_length,
 		error_correction, decoded_seq_buf_size_frames, ber, out_file_postfix, in_file, 0);
 }

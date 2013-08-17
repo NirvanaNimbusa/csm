@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: test_utilities.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -48,7 +48,6 @@ void print_data(int* data_in, int data_size)
 	printf("\n");
 }
 
-
 int* get_file_data(char* file_path)
 {
 	FILE  *src_file = NULL;
@@ -57,36 +56,37 @@ int* get_file_data(char* file_path)
 	int byte;
 
 	src_file = fopen(file_path, "rb");
-
-	if(src_file == NULL)
-		xexit("get_file_data: error opening file\n");
-
-	file_size = get_file_size(file_path);
-	int size = file_size * CHAR_BIT;
-	data = (int*)calloc(size, sizeof(int));
-
-	int byte_cnt = 0;
-
-	for (int ii = 0; ii < file_size; ii++)
+	if(src_file)
 	{
-		byte  =  fgetc(src_file);
-		//printf("%d\n", byte);
-
-		unsigned int i;
-		i = 1 << (sizeof(char) * CHAR_BIT - 1);
-
-		while (i > 0) 
+		file_size = get_file_size(file_path);
+		int size = file_size * CHAR_BIT;
+		data = (int*)calloc(size, sizeof(int));
+		if(data)
 		{
-			if (byte & i)
-				data[byte_cnt] = 1;
-			else
-				data[byte_cnt] = 0;
-			byte_cnt++;
-			i >>= 1;
+			int byte_cnt = 0;
+			for (int ii = 0; ii < file_size; ii++)
+			{
+				byte  =  fgetc(src_file);
+				//printf("%d\n", byte);
+
+				unsigned int i;
+				i = 1 << (sizeof(char) * CHAR_BIT - 1);
+
+				while (i > 0) 
+				{
+					if (byte & i)
+						data[byte_cnt] = 1;
+					else
+						data[byte_cnt] = 0;
+					byte_cnt++;
+					i >>= 1;
+				}
+			}
+			fclose(src_file);
+			return data;
 		}
 	}
-	fclose(src_file);
-	return data;
+	return NULL;
 }
 
 void put_file_data(int* data, char* file_path,  char* file_postfix)
@@ -97,66 +97,69 @@ void put_file_data(int* data, char* file_path,  char* file_postfix)
 	char* byte_str = NULL;
 
  	char* file_name_full = (char*)calloc( strlen(file_path)+strlen(file_postfix) + 2, sizeof(char));
- 	//strcat(file_name_full, file_path);
- 	//strcat(file_name_full, file_postfix);
-	char* ext = strrchr(file_path, '.');
-
-	/* make 'file_name' */
-	int i = 0;
-	for (; file_path[i] != *ext; i++)
-		file_name_full[i] = file_path[i];
-	
-	/* make 'file_name.' */
-	file_name_full[i] = '.';
-
-	/* make 'file_name.postfix' */
-	strcat(file_name_full, file_postfix);
-
-	/* make 'file_name.ext' */
-	strcat(file_name_full, ext);
-
-
-	// replace '.' to '_', because
-	// "! LaTeX Error: Unknown graphics extension: .transferred_g_4_l_15_e_3_d_31_b_0.0"
-	int k = 0;
-	for (;i < (int)strlen(file_name_full); i++)
+	if(file_name_full)
 	{
-		if(file_name_full[i] == '.')
+		//strcat(file_name_full, file_path);
+		//strcat(file_name_full, file_postfix);
+		char* ext = strrchr(file_path, '.');
+
+		/* make 'file_name' */
+		int i = 0;
+		for (; file_path[i] != *ext; i++)
+			file_name_full[i] = file_path[i];
+
+		/* make 'file_name.' */
+		file_name_full[i] = '.';
+
+		/* make 'file_name.postfix' */
+		strcat(file_name_full, file_postfix);
+
+		/* make 'file_name.ext' */
+		strcat(file_name_full, ext);
+
+
+		// replace '.' to '_', because
+		// "! LaTeX Error: Unknown graphics extension: .transferred_g_4_l_15_e_3_d_31_b_0.0"
+		int k = 0;
+		for (;i < (int)strlen(file_name_full); i++)
 		{
-			file_name_full[i] = '_';
-			k++;
+			if(file_name_full[i] == '.')
+			{
+				file_name_full[i] = '_';
+				k++;
+			}
+			if (k == 2)
+				break;
 		}
-		if (k == 2)
-			break;
+		out_file = fopen(file_name_full, "wb");
 	}
 
-	out_file = fopen(file_name_full, "wb");
-
-	if(out_file == NULL)
-		xexit("put_file_data: error opening file\n");
-
-	free(file_name_full);
-
-	file_size = get_file_size(file_path);
-	int data_size = file_size * CHAR_BIT;
-	
-	char* buffer = (char*)calloc(file_size, sizeof(char));
-	int data_cnt = 0;
-
-	for (int ii = 0; ii < file_size; ii++)
+	if(file_name_full && out_file)
 	{
-		int t = 7;
-		byte = 0;
-		for (int i = 0; i < CHAR_BIT; i++, data_cnt++, t--)
-			byte += data[data_cnt] ? 1 << t : 0;
-		
-		buffer[ii] = byte;
-		//printf("%d\n", byte);
-	}
+		free(file_name_full);
+		file_size = get_file_size(file_path);
+		int data_size = file_size * CHAR_BIT;
 
-	fwrite (buffer, 1, file_size, out_file);
-	free(buffer);
-	fclose(out_file);
+		int data_cnt = 0;
+		char* buffer = (char*)calloc(file_size, sizeof(char));
+		if(buffer)
+		{
+			for (int ii = 0; ii < file_size; ii++)
+			{
+				int t = 7;
+				byte = 0;
+				for (int i = 0; i < CHAR_BIT; i++, data_cnt++, t--)
+					byte += data[data_cnt] ? 1 << t : 0;
+
+				buffer[ii] = byte;
+				//printf("%d\n", byte);
+			}
+
+			fwrite (buffer, 1, file_size, out_file);
+			free(buffer);
+			fclose(out_file);
+		}
+	}
 }
 
 int get_file_size(char* file_path)
@@ -165,36 +168,35 @@ int get_file_size(char* file_path)
 	int file_size;
 
 	src_file = fopen(file_path, "rb");
-
-	if(src_file == NULL)
+	if(src_file)
 	{
+		fseek(src_file, 0, SEEK_END); // seek to end of file
+		file_size = ftell(src_file); // get current file pointer
 		fclose(src_file);
-		xexit("get_file_size: error opening file\n");
+		return file_size;
 	}
-
-	fseek(src_file, 0, SEEK_END); // seek to end of file
-	file_size = ftell(src_file); // get current file pointer
-	fclose(src_file);
-	return file_size;
+	return NULL;
 }
 
 char * byte2bin(int n)
 {
 	int cnt = 0;
 	char * str = (char*)malloc(sizeof(char) * CHAR_BIT);
-
-	unsigned int i;
-	i = 1 << (sizeof(char) * CHAR_BIT - 1);
-
-	while (i > 0) 
+	if(str)
 	{
-		if (n & i)
-			str[cnt] = '1';
-		else
-			str[cnt] = '0';
-		cnt++;
-		i >>= 1;
-	}
+		unsigned int i;
+		i = 1 << (sizeof(char) * CHAR_BIT - 1);
 
-	return str;
+		while (i > 0) 
+		{
+			if (n & i)
+				str[cnt] = '1';
+			else
+				str[cnt] = '0';
+			cnt++;
+			i >>= 1;
+		}
+
+		return str;
+	}
 }

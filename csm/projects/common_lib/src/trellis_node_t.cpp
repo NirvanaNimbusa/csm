@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: trellis_node_t.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -82,7 +82,7 @@ void trellis_node_destroy (trellis_node_t self)
 
 void trellis_node_print(trellis_node_t self)
 {
-	printf_d("dumping of trellis node is started...\n");
+	printf_d("dumping of trellis node is started- \n");
 	printf_d("- metric: %d\n", self->metric);
 	printf_d("- decoded sequence buffer size: %d\n", self->decoded_sequence_buffer_size);
 	printf_d("- decoded sequence buffer length: %d\n", self->decoded_sequence_buffer_length);
@@ -104,5 +104,5 @@ void trellis_node_print(trellis_node_t self)
 	for (i = 0; i < 2; i++) 
 		printf_d("%d", self->second_edge_value[i]);
 	printf_d("\n");
-	printf_d("dumping of trellis node is finished...\n");
+	printf_d("dumping of trellis node is finished- \n");
 }

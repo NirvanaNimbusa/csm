@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: codeword_fifo_t.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -31,8 +31,9 @@ void codeword_fifo_init (codeword_fifo_t const self)
 {
 	self->length = 0;
 	self->fifo = (codeword_t*)malloc(sizeof(codeword_t) * self->fifo_size);
-	for (int i = 0; i < self->fifo_size; i++)
-		self->fifo[i] = codeword_create(self->codeword_size);
+	if(self->fifo != NULL)
+		for (int i = 0; i < self->fifo_size; i++)
+			self->fifo[i] = codeword_create(self->codeword_size);
 }
 
 codeword_fifo_t codeword_fifo_create(int fifo_size, int codeword_size)

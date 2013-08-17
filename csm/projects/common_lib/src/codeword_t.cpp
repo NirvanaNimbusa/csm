@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: codeword_t.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -35,10 +35,13 @@ void codeword_init (codeword_t const self)
 codeword_t codeword_create(int size)
 {
 	codeword_t self = (codeword_t)malloc(sizeof(codeword_base_t));
-	self->xsize = size;
-	if(self)
+	if(self) 
+	{
+		self->xsize = size;
 		codeword_init(self);
-	return self;
+		return self;
+	}
+	return NULL;
 }
 
 void codeword_deinit (codeword_t self)

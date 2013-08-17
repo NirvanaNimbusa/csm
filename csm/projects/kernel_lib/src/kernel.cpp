@@ -1,9 +1,9 @@
 //*******************************************************************************
-// Title: Communication System Modeler v.1.0
+// Title: Communication System Modeler v.1.1
 // File: kernel.cpp
 // Author: Pavel Morozkin
-// Date: May 31th 2013
-// Revised: May 31th 2013
+// Date: August 17th 2013
+// Revised: August 17th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -128,14 +128,17 @@ int kernel_run
 	/************************************************************************/
 	/* Запуск цикла моделирования.                                          */
 	/************************************************************************/
+	int sent_frames = 0;
+	int frames_to_sent = data_size/bch_frame_size;
 	int send_bits_all = data_size+decoded_seq_buf_size_frames*bch_frame_size;
 L_Loop:
-	if (!(sent_bits_cnt % percent_precision) && !gui_progress)
+	/*if (!(sent_bits_cnt % percent_precision) && !gui_progress)
 		printf("\rProgress: %.0f%%", ((float)sent_bits_cnt/
 		(float)send_bits_all) * 100);
 	else if (!(sent_bits_cnt % percent_precision))
 		printf("Progress: %.0f%%\n", ((float)sent_bits_cnt/
-		(float)send_bits_all) * 100);
+		(float)send_bits_all) * 100);*/
+	loadbar(sent_frames++, frames_to_sent, 50);
 	sent_bits_cnt += bch_frame_size;
 
 	/* Генерация фрейма данных передатчиком. */
@@ -214,8 +217,6 @@ L_Skip_Dummy_Generation:
 	/* Останов программных компонентов.                                     */
 	/************************************************************************/
 L_Stop:
-	printf("\rProgress: 100%%\n");
-
 	transmitter->stop(transmitter);
 	receiver->stop(receiver);
 	bch_encoder->stop(bch_encoder);
@@ -228,11 +229,12 @@ L_Stop:
 	/* Проверка корректности принятых данных.                               */
 	/************************************************************************/
 	data_out = receiver_get_received_data(receiver);
-
+	
+	printf("\n");
 	if (cmp_data(data_in, data_out, data_size))
-		printf("test: OK\n");
+		printf("Comparison test: OK\n");
 	else
-		printf("test: FAIL\n");
+		printf("Comparison test: FAIL\n");
 
 	free(data_in);
 
@@ -264,7 +266,7 @@ L_Stop:
 	return 0;
 }
 
-int kernel_run_01
+int kernel_run_cnv
 	(
 	int galois_field_degree,
 	int bch_code_length,
@@ -280,9 +282,8 @@ int kernel_run_01
 	/************************************************************************/
 	/* Параметры тестового окружения.                                       */
 	/************************************************************************/
-	char* file_path = input_file_name;
-	int* data_in = get_file_data(file_path);
-	int data_size = get_file_size(file_path) * CHAR_BIT;
+	int* data_in = get_file_data(input_file_name);
+	int data_size = get_file_size(input_file_name) * CHAR_BIT;
 	//print_data(data_in, data_size);
 	int* data_out = NULL;
 
@@ -349,14 +350,17 @@ int kernel_run_01
 	/************************************************************************/
 	/* Запуск цикла моделирования.                                          */
 	/************************************************************************/
+	int sent_frames = 0;
+	int frames_to_sent = data_size/frame_size;
 	int send_bits_all = data_size+decoded_seq_buf_size_frames*frame_size;
 L_Loop:
-	if (!(sent_bits_cnt % percent_precision) && !gui_progress)
+	/*if (!(sent_bits_cnt % percent_precision) && !gui_progress)
 		printf("\rProgress: %.0f%%", ((float)sent_bits_cnt/
 		(float)send_bits_all) * 100);
 	else if (!(sent_bits_cnt % percent_precision))
 		printf("Progress: %.0f%%\n", ((float)sent_bits_cnt/
-		(float)send_bits_all) * 100);
+		(float)send_bits_all) * 100);*/
+	loadbar(sent_frames++, frames_to_sent, 50);
 	sent_bits_cnt += frame_size;
 
 	/* Генерация фрейма данных передатчиком. */
@@ -409,8 +413,6 @@ L_Skip_Dummy_Generation:
 	/* Останов программных компонентов.                                     */
 	/************************************************************************/
 L_Stop:
-	printf("\rProgress: 100%%\n");
-
 	transmitter->stop(transmitter);
 	receiver->stop(receiver);
 	cnv_encoder->stop(cnv_encoder);
@@ -421,11 +423,12 @@ L_Stop:
 	/* Проверка корректности принятых данных.                               */
 	/************************************************************************/
 	data_out = receiver_get_received_data(receiver);
-
+	
+	printf("\n");
 	if (cmp_data(data_in, data_out, data_size))
-		printf("test: OK\n");
+		printf("Comparison test: OK\n");
 	else
-		printf("test: FAIL\n");
+		printf("Comparison test: FAIL\n");
 
 	free(data_in);
 
@@ -436,7 +439,7 @@ L_Stop:
 		error_correction,
 		decoded_seq_buf_size,
 		ber);
-	put_file_data(data_out, file_path, out_file_postfix);
+	put_file_data(data_out, input_file_name, out_file_postfix);
 
 	//print_data(data_in, data_size);
 	//print_data(data_out, data_size);

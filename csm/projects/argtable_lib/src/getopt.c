@@ -593,9 +593,7 @@ int
 
 	   This distinction seems to be the most useful approach.  */
 
-	if (longopts != NULL
-	    && (argv[optind][1] == '-'
-		|| (long_only && (argv[optind][2] || !my_index(optstring, argv[optind][1])))))
+	if (longopts && (argv[optind][1] == '-'	|| (long_only && (argv[optind][2] || !my_index(optstring, argv[optind][1])))))
 	{
 		char *nameend;
 		const struct option *p;
@@ -728,7 +726,7 @@ int
 	}
 
 	/* Look at and handle the next short option-character.  */
-
+	if(longopts)
 	{
 		char c = *nextchar++;
 		char *temp = my_index(optstring, c);
@@ -924,6 +922,7 @@ int
 		}
 		return c;
 	}
+	return 0;
 }
 
 int
