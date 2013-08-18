@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: main.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -29,33 +29,91 @@ int app_run(int galois_field_degree,
 	int error_correction,
 	int decoded_seq_buf_size_frames,
 	double channel_ber,
+	int random_error_quantity,
+	int erase_error_quantity,
 	const char* file_postfix,
 	int run_under_gui,
 	int cnv_only,
-	int v,
-	const char **infiles, int ninfiles)
+	int bch_only,
+	int channel_cfg,
+	int verbose,
+	const char **infiles, 
+	int ninfiles)
 {
 	int i;
 
 	for (i=0; i<ninfiles; i++)
 	{
+		if(cnv_only && bch_only)
+		{
+			printf("Incompatible options for starting the kernel, specify only one mode\n");
+			return 1;
+		}
+
 		printf("Simulation of transfer \'%s\' data is started...\n", infiles[i]);
-		
+
 		if(cnv_only)
-		kernel_run_cnv(galois_field_degree,
-			bch_code_length,
-			error_correction,
-			decoded_seq_buf_size_frames,
-			channel_ber,
-			const_cast<char*>(file_postfix),
-			const_cast<char*>(infiles[i]),
-			run_under_gui);
+		{
+			kernel_run(
+				CNV_MODE,
+				USE_BER_CHANNEL,
+				galois_field_degree,
+				bch_code_length,
+				error_correction,
+				decoded_seq_buf_size_frames,
+				channel_ber,
+				random_error_quantity,
+				erase_error_quantity,
+				const_cast<char*>(file_postfix),
+				const_cast<char*>(infiles[i]),
+				run_under_gui);
+		}
+		else if(bch_only)
+		{
+			if(channel_cfg)
+			{
+				kernel_run(
+					BCH_MODE,
+					USE_ERRQ_ERAQ_CHANNEL,
+					galois_field_degree,
+					bch_code_length,
+					error_correction,
+					decoded_seq_buf_size_frames,
+					channel_ber,
+					random_error_quantity,
+					erase_error_quantity,
+					const_cast<char*>(file_postfix),
+					const_cast<char*>(infiles[i]),
+					run_under_gui);
+			}
+			else
+			{
+				kernel_run(
+					BCH_MODE,
+					USE_BER_CHANNEL,
+					galois_field_degree,
+					bch_code_length,
+					error_correction,
+					decoded_seq_buf_size_frames,
+					channel_ber,
+					random_error_quantity,
+					erase_error_quantity,
+					const_cast<char*>(file_postfix),
+					const_cast<char*>(infiles[i]),
+					run_under_gui);
+			}
+		}
 		else
-		kernel_run(galois_field_degree,
+		kernel_run(
+			BASE_MODE,
+			USE_BER_CHANNEL,
+			galois_field_degree,
 			bch_code_length,
 			error_correction,
 			decoded_seq_buf_size_frames,
 			channel_ber,
+			random_error_quantity,
+			erase_error_quantity,
 			const_cast<char*>(file_postfix),
 			const_cast<char*>(infiles[i]),
 			run_under_gui);
@@ -67,44 +125,50 @@ int app_run(int galois_field_degree,
 int main(int argc, char **argv)
 {
 	struct arg_int *galois_field_degree  =
-		arg_int0("g", "galois", NULL, 		"define Evariste Galois field degree (between 2..20, default is 4)");
+		arg_int0 ("g", "galois", NULL, 		"define Evariste Galois field degree (between 2..20, default is 4)");
 	struct arg_int *bch_code_length  =
-		arg_int0("l", "length",     NULL, 
-		"define BCH code length (default is 15)");
+		arg_int0 ("l", "length",     NULL, 	"define BCH code length (default is 15)");
 	struct arg_int *error_correction  =
-		arg_int0("e", "errors",    NULL, 
-		"define BCH code error correction property (default is 3)");
+		arg_int0 ("e", "errors",    NULL, 	"define BCH code error correction property (default is 3)");
 	struct arg_int *decoded_seq_buf_size_frames  =
-		arg_int0("d", "dbuffer", NULL, 
-		"define internal buffer size of trellis node in Viterbi Decoder (default is 2 frames)");
-	struct arg_dbl *channel_ber = arg_dbl0("b", "ber", NULL, 
-		"define channel Bit Error Rate (default is 1e-12)");
-	struct arg_str *file_postfix = arg_str0("p", "postfix", NULL, 
-		"define out file postfix (default is \'transferred\')");
+		arg_int0 ("d", "dbuffer", NULL, 	"define internal buffer size of trellis node in Viterbi Decoder (default is 2 frames)");
+	struct arg_dbl *channel_ber = 
+		arg_dbl0 ("b", "ber", NULL,  		"define channel Bit Error Rate (default is 1e-12)");
+	struct arg_int *channel_req = 
+		arg_int0 ("r", "req", NULL, 		"define channel channel Random Error Quantity to be generated (use without BER)");
+	struct arg_int *channel_eeq = 
+		arg_int0 ("i", "eeq", NULL, 		"define channel channel Erase Errors Quantity to be generated (use without BER)");
+	struct arg_str *file_postfix = 
+		arg_str0 ("p", "postfix", NULL,		"define out file postfix (default is \'transferred\')");
 	struct arg_lit  *cnv_only = 
-		arg_lit0 ("c", "cnvonly",                "use only Convolutional encoding and Viterbi decoding");
-	//struct arg_lit  *bch_only = 
-	//	arg_lit0 ("x", "bchonly",                "use only BCH-encoding/decoding");
+		arg_lit0 ("c", "cnvonly",           "use only Convolutional encoding and Viterbi decoding");
+	struct arg_lit  *bch_only = 
+		arg_lit0 ("x", "bchonly",           "use only BCH-encoding/decoding");
+	struct arg_lit  *channel_cfg = 
+		arg_lit0 ("j", "chcfg",				"configure channel (use with -r and -i)");
 	struct arg_lit  *run_under_gui =
-		arg_lit0 ("u", "gui",		             "run under GUI (additional GUI-application needed)");
+		arg_lit0 ("u", "gui",		        "run under GUI (additional GUI-application needed)");
 	struct arg_lit  *verbose = 
-		arg_lit0 ("v", "verbose,debug",          "verbose messages");
+		arg_lit0 ("v", "verbose,debug",     "verbose messages");
 	struct arg_lit  *help    = 
-		arg_lit0 ("h","help",                    "print this help and exit");
+		arg_lit0 ("h","help",               "print this help and exit");
 	struct arg_lit  *version = 
-		arg_lit0 (NULL,"version",                "print version information and exit");
+		arg_lit0 (NULL,"version",           "print version information and exit");
 	struct arg_file *infiles = 
-		arg_filen(NULL, NULL,NULL,1,argc+2,      "define input file(s)");
+		arg_filen(NULL, NULL,NULL,1,argc+2, "define input file(s)");
 	struct arg_end  *end     = arg_end(20);
 	void* argtable[] = {galois_field_degree,
 		bch_code_length,
 		error_correction,
 		decoded_seq_buf_size_frames,
 		channel_ber,
+		channel_req,
+		channel_eeq,
 		file_postfix,
 		infiles,
 		cnv_only,
-		//bch_only,
+		bch_only,
+		channel_cfg,
 		run_under_gui,
 		verbose,
 		help,
@@ -182,9 +246,13 @@ int main(int argc, char **argv)
 		error_correction->ival[0],
 		decoded_seq_buf_size_frames->ival[0],
 		channel_ber->dval[0],
+		channel_req->ival[0],
+		channel_eeq->ival[0],
 		file_postfix->sval[0],
 		run_under_gui->count,
 		cnv_only->count,
+		bch_only->count,
+		channel_cfg->count,
 		verbose->count,
 		infiles->filename,
 		infiles->count);

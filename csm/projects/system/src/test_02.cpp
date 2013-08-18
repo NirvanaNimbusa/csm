@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: test_02.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -61,7 +61,7 @@ int test_02()
 	/* Создание программных компонентов.                                    */
 	/************************************************************************/
 	bch_encoder_t bch_encoder = bch_encoder_create(flog, galois_field_degree, bch_code_length, error_correction);
-	bch_decoder_t bch_decoder = bch_decoder_create(flog, galois_field_degree, bch_code_length, error_correction);
+	bch_decoder_t bch_decoder = bch_decoder_create(ERRORS_CORRECTION_MODE, flog, galois_field_degree, bch_code_length, error_correction);
 
 	/* Получение длины фрейма данных, который может кодировать БЧХ-кодер. */
 	int bch_frame_size = bch_encoder_get_frame_size(bch_encoder);

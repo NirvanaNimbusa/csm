@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: bch_decoder_t.h
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -32,7 +32,18 @@
 #define SELF bch_decoder_t self
 typedef struct bch_decoder bch_decoder_base_t;
 typedef bch_decoder_base_t* bch_decoder_t;
+
+enum bch_decoder_mode_base;
+typedef enum bch_decoder_mode_base bch_decoder_mode_t;
+
+enum bch_decoder_mode_base
+{
+	ERRORS_CORRECTION_MODE,
+	ERRORS_ERASE_CORRECTION_MODE,
+};
+
 struct bch_decoder {
+	bch_decoder_mode_t mode;
 	int galois_field_degree;
 	int code_length;
 	int inf_symbols_q;
@@ -56,7 +67,7 @@ struct bch_decoder {
 void bch_decoder_init (SELF);
 void bch_decoder_deinit (SELF);
 
-bch_decoder_t bch_decoder_create (FILE* log, int galois_field_degree, int code_length, int error_correction);
+bch_decoder_t bch_decoder_create (bch_decoder_mode_t bch_decoder_mode, FILE* log, int galois_field_degree, int code_length, int error_correction);
 void bch_decoder_destroy (SELF);
 
 int bch_decoder_start (SELF);
@@ -66,6 +77,9 @@ frame_t bch_decoder_decode (SELF, codeword_t const codeword_out, codeword_t cons
 
 int bch_decoder_get_frame_size(SELF);
 int bch_decoder_get_codeword_size(SELF);
+
+/* Use only with ERRORS_CORRECTION_MODE. */
+void bch_decoder_set_erase_errors_q(SELF, int erase_errors_q);
 
 #undef SELF
 

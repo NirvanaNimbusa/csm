@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common_lib", "projects\common_lib\common_lib.vcxproj", "{5816882F-4655-4ABC-A3AE-DA69B602C58F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "codec_bch_lib", "projects\codec_bch_lib\codec_bch_lib.vcxproj", "{BF0B897E-8F31-4843-AF05-135D26ED96A2}"
@@ -35,6 +35,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kernel_lib_test", "projects\kernel_lib_test\kernel_lib_test.vcxproj", "{893D9C10-7414-4538-93D3-29F788A23B3A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31037040-AC20-4566-9ACF-081245C6D11A} = {31037040-AC20-4566-9ACF-081245C6D11A}
+		{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B} = {3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}
 		{1AA723B4-CD16-4114-9C38-149FCBEC4AD7} = {1AA723B4-CD16-4114-9C38-149FCBEC4AD7}
 	EndProjectSection
 EndProject
@@ -50,6 +51,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kernel_lib", "projects\kern
 		{5816882F-4655-4ABC-A3AE-DA69B602C58F} = {5816882F-4655-4ABC-A3AE-DA69B602C58F}
 		{55D80451-59DA-4928-9DA2-C371ED593CB0} = {55D80451-59DA-4928-9DA2-C371ED593CB0}
 		{BF0B897E-8F31-4843-AF05-135D26ED96A2} = {BF0B897E-8F31-4843-AF05-135D26ED96A2}
+		{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B} = {3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}
 		{1AA723B4-CD16-4114-9C38-149FCBEC4AD7} = {1AA723B4-CD16-4114-9C38-149FCBEC4AD7}
 	EndProjectSection
 EndProject
@@ -57,6 +59,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app", "projects\app\app.vcx
 	ProjectSection(ProjectDependencies) = postProject
 		{31037040-AC20-4566-9ACF-081245C6D11A} = {31037040-AC20-4566-9ACF-081245C6D11A}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "channel_be_lib", "projects\channel_be_lib\channel_be_lib.vcxproj", "{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,6 +124,10 @@ Global
 		{8C50C5A8-A56C-49EE-AD92-642D8AEC0022}.Debug|Win32.Build.0 = Debug|Win32
 		{8C50C5A8-A56C-49EE-AD92-642D8AEC0022}.Release|Win32.ActiveCfg = Release|Win32
 		{8C50C5A8-A56C-49EE-AD92-642D8AEC0022}.Release|Win32.Build.0 = Release|Win32
+		{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}.Debug|Win32.Build.0 = Debug|Win32
+		{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}.Release|Win32.ActiveCfg = Release|Win32
+		{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

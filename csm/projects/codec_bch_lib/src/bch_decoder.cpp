@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: bch_decoder.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -24,11 +24,12 @@
 
 #include <stdlib.h>
 
-bch_decoder_t bch_decoder_create (FILE* log, int galois_field_degree, int code_length, int error_correction)
+bch_decoder_t bch_decoder_create (bch_decoder_mode_t bch_decoder_mode, FILE* log, int galois_field_degree, int code_length, int error_correction)
 {
 	bch_decoder_t self = (bch_decoder_t)malloc(sizeof(bch_decoder_base_t));
 	if(!self) return NULL;
 
+	self->mode = bch_decoder_mode;
 	self->log = log;
 	self->galois_field_degree = galois_field_degree;
 	self->code_length = code_length;
@@ -96,6 +97,8 @@ int bch_decoder_stop (bch_decoder_t self)
 	log(self->log, "received codewords: %d\n", self->received_codewords_cnt);
 	log(self->log, "received codewords (valid): %d\n", self->received_codewords_valid_cnt);
 	log(self->log, "received codewords (corrupted): %d\n", self->received_codewords_corrupted_cnt);
+	log(self->log, "founded error codewords: %d\n", bch_decoder_kernel_get_founded_errors(self->bch_decoder_kernel));
+	log(self->log, "recovered bits: %d\n", bch_decoder_kernel_get_recovered_bits(self->bch_decoder_kernel));
 
 	log(self->log, "generated frames: %d\n", self->generated_frames_cnt);
 	return 0;
@@ -121,15 +124,59 @@ frame_t bch_decoder_decode (bch_decoder_t self, codeword_t codeword_out, codewor
 		self->received_codewords_corrupted_cnt++;
 	}
 
-	frame_t frame = bch_decoder_kernel_decode(self->bch_decoder_kernel, codeword_out, codeword_in);
+	if(self->mode == ERRORS_CORRECTION_MODE)
+	{
+		frame_t frame = bch_decoder_kernel_decode(self->bch_decoder_kernel, codeword_out, codeword_in);
+		self->generated_frames_cnt++;
 
-	self->generated_frames_cnt++;
+		codeword_destroy(codeword_out);
+		codeword_destroy(codeword_in);
+		log2(self->log, "bch decoding finished\n");
 
-	codeword_destroy(codeword_out);
-	codeword_destroy(codeword_in);
-	log2(self->log, "bch decoding finished\n");
-	
-	return frame;
+		return frame;
+	}
+	else if(self->mode == ERRORS_ERASE_CORRECTION_MODE)
+	{
+		int erase_errors_quantity = self->bch_decoder_kernel->bch_decoder_kernel_vars->erase_errors_q;
+		int corrected_errors_quantity_f = 0;
+		int corrected_errors_quantity_s = 0;
+
+		/* Замена стерных символов нулями. */
+		/* ПРИМЕЧАНИЕ: Стирания уже сгенерированы каналом. Но для понимания работы алгоритма выполняется земена. */
+		for (int i = codeword_out->xsize - erase_errors_quantity; i < codeword_out->xsize; i++)
+			codeword_out->xcodeword[i] = 0;		
+
+		/* Докодирование полученного слова. */
+		frame_t frame_f = bch_decoder_kernel_decode(self->bch_decoder_kernel, codeword_out, codeword_in);
+		
+		/* Количество ошибок на нестертых позициях. */
+		corrected_errors_quantity_f = self->bch_decoder_kernel->bch_decoder_kernel_vars->corrected_errors_nonerased_positions;
+
+		/* Замена стерных символов единицами. */
+		for (int i = codeword_out->xsize - erase_errors_quantity; i < codeword_out->xsize; i++)
+			codeword_out->xcodeword[i] = 1;	
+
+		/* Докодирование полученного слова. */
+		frame_t frame_s = bch_decoder_kernel_decode(self->bch_decoder_kernel, codeword_out, codeword_in);
+
+		/* Количество ошибок на нестертых позициях. */
+		corrected_errors_quantity_s = self->bch_decoder_kernel->bch_decoder_kernel_vars->corrected_errors_nonerased_positions;
+
+		/* Выбор в пользу декодирования с наименьшим числом ошибок на настертых позициях. */
+		if(corrected_errors_quantity_f <= corrected_errors_quantity_s)
+		{
+			frame_destroy(frame_s);
+			self->generated_frames_cnt++;
+			return frame_f;
+		}
+		else
+		{
+			frame_destroy(frame_f);
+			self->generated_frames_cnt++;
+			return frame_s;
+		}
+	}
+	return NULL;
 }
 
 int bch_decoder_get_frame_size(bch_decoder_t self)
@@ -140,4 +187,9 @@ int bch_decoder_get_frame_size(bch_decoder_t self)
 int bch_decoder_get_codeword_size(bch_decoder_t self)
 {
 	return self->code_length;
+}
+
+void bch_decoder_set_erase_errors_q(bch_decoder_t self, int erase_errors_q)
+{
+	self->bch_decoder_kernel->bch_decoder_kernel_vars->erase_errors_q = erase_errors_q;
 }

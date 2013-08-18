@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: bch_decoder_kernel.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -26,7 +26,9 @@
 #include <math.h>
 #include <stdio.h>
 
-bch_decoder_kernel_t bch_decoder_kernel_create (FILE* log, int galois_field_degree, int code_length, int inf_symbols_q, int error_correction)
+bch_decoder_kernel_t bch_decoder_kernel_create
+(	
+	FILE* log, int galois_field_degree, int code_length, int inf_symbols_q, int error_correction)
 {
 	bch_decoder_kernel_t self = (bch_decoder_kernel_t)malloc(sizeof(bch_decoder_kernel_base_t));
 	if(!self) return NULL;
@@ -101,7 +103,7 @@ frame_t bch_decoder_kernel_decode (bch_decoder_kernel_t self, codeword_t codewor
 	bch_codec_kernel_vars_t bch_decoder_kernel_vars = self->bch_decoder_kernel_vars;
 	bch_decoder_kernel_vars->number_of_errors = bch_decoder_kernel_vars->error_correction;
 
-	//!error_positions is not used
+	//!error_positions are not used
 	for (int i = 0; i < bch_decoder_kernel_vars->number_of_errors; i++)
 		bch_decoder_kernel_vars->error_positions[i] = i; //! rand()
 
@@ -131,7 +133,8 @@ frame_t bch_decoder_kernel_decode (bch_decoder_kernel_t self, codeword_t codewor
 	//}
 
 	printf_d("decoded data:\n");
-	for (int i = bch_decoder_kernel_vars->code_length - bch_decoder_kernel_vars->inf_symbols_q; i < bch_decoder_kernel_vars->code_length; i++) {
+	for (int i = bch_decoder_kernel_vars->code_length - bch_decoder_kernel_vars->inf_symbols_q;
+		i < bch_decoder_kernel_vars->code_length; i++) {
 		printf_d("%1d", bch_decoder_kernel_vars->received_codeword[i]);
 		if ((i-bch_decoder_kernel_vars->code_length+bch_decoder_kernel_vars->inf_symbols_q) &&
 			(((i-bch_decoder_kernel_vars->code_length+bch_decoder_kernel_vars->inf_symbols_q) % 50) == 0))
@@ -156,4 +159,14 @@ frame_t bch_decoder_kernel_decode (bch_decoder_kernel_t self, codeword_t codewor
 	for (int j = 0, i = ind; i < bch_decoder_kernel_vars->code_length; i++, j++)
 		frame->xframe[j] = bch_decoder_kernel_vars->received_codeword[i];
 	return frame;
+}
+
+unsigned int bch_decoder_kernel_get_founded_errors(bch_decoder_kernel_t self)
+{
+	return self->bch_decoder_kernel_vars->founded_errors;
+}
+
+unsigned int bch_decoder_kernel_get_recovered_bits(bch_decoder_kernel_t self)
+{
+	return self->bch_decoder_kernel_vars->corrected_errors;
 }

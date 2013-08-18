@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: test_utilities.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -113,6 +113,7 @@ void put_file_data(int* data, char* file_path,  char* file_postfix)
 
 		/* make 'file_name.postfix' */
 		strcat(file_name_full, file_postfix);
+		free(file_postfix);
 
 		/* make 'file_name.ext' */
 		strcat(file_name_full, ext);
@@ -199,4 +200,5 @@ char * byte2bin(int n)
 
 		return str;
 	}
+	return NULL;
 }

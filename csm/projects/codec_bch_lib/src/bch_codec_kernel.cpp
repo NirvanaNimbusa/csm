@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: bch_codec_kernel.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -135,6 +135,10 @@ check_and_set_code_params
 	vars->code_length_max = code_length_max;
 	vars->code_length = code_length;
 	vars->galois_field_degree = galois_field_degree;
+	vars->founded_errors = 0;
+	vars->corrected_errors = 0;
+	vars->erase_errors_q = 0;
+	vars->corrected_errors_nonerased_positions = 0;
 
 	vars->error_correction = error_correction;
 	if(error_correction <= 0)
@@ -251,7 +255,7 @@ bch_codec_kernel_vars_t generate_primitive_polynom(bch_codec_kernel_vars_t vars)
  * alpha=2 is the primitive element of GF(2**galois_field_degree) 
  * 
  * Аргументы:
- * vars - переменные ядра БЧХ-кодера;
+ * vars - переменные ядра БЧХ-кодера.
  * 
  * Возвращаемое значение:
  * Переменные ядра БЧХ-кодера.
@@ -519,6 +523,7 @@ void decode_bch(bch_codec_kernel_vars_t vars)
 	printf_d("\n");
 
 	if (syn_error) {	/* if there are errors, try to correct them */
+		vars->founded_errors++;
 		/*
 		 * Compute the error location polynomial via the Berlekamp
 		 * iterative algorithm. Following the terminology of Lin and
@@ -651,7 +656,23 @@ void decode_bch(bch_codec_kernel_vars_t vars)
 			if (count == l[u])	
 			/* no. roots = degree of elp hence <= error_correction errors */
 				for (i = 0; i < l[u]; i++)
+				{
 					vars->received_codeword[loc[i]] ^= 1;
+					
+					/* Logic added. */
+					
+					//printf("%d ", loc[i]);
+					vars->corrected_errors++;
+					vars->corrected_errors_nonerased_positions = 0;
+					
+					/* Поиск количества исправленных ошибок на нестертых позициях. */
+					for (unsigned int j = 0; j < vars->code_length - vars->erase_errors_q; j++)
+					{
+						if(loc[i] == j)
+							vars->corrected_errors_nonerased_positions++;
+					}
+					
+				}
 			else	/* elp has degree >error_correction hence cannot solve */
 
 				printf_d("Incomplete decoding: errors detected\n");

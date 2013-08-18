@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: test_02.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -62,21 +62,21 @@ int test_02()
 /************************************************************************/
 /* Параметры БЧХ-кодера                                                 */
 /************************************************************************/
-	int galois_field_degree = 8;
-	int code_length = 147;
-	int error_correction = 5;
+	int galois_field_degree = 4;
+	int code_length = 15;
+	int error_correction = 3;
 /************************************************************************/
 /* Параметры ДСК-канала                                                 */
 /************************************************************************/
 	double ber = 0.2;
-	int errors_quantity = 7;
+	int errors_quantity = 0;
 	FILE* flog = stderr;
 
 /************************************************************************/
 /* Создание программных компонентов.                                    */
 /************************************************************************/
 	bch_encoder_t bch_encoder = bch_encoder_create(log, galois_field_degree, code_length, error_correction);
-	bch_decoder_t bch_decoder = bch_decoder_create(log, galois_field_degree, code_length, error_correction);
+	bch_decoder_t bch_decoder = bch_decoder_create(ERRORS_ERASE_CORRECTION_MODE, log, galois_field_degree, code_length, error_correction);
 
 	//channel_bs_t channel_bs = channel_bs_create(flog, ber);
 	channel_bs_t channel_bs = channel_bs_create_q(flog, errors_quantity);

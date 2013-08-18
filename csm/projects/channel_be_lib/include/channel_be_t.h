@@ -1,6 +1,6 @@
 //*******************************************************************************
 // Title: Communication System Modeler v.1.1
-// File: codeword_fifo_t.h
+// File: channel_be_t.h
 // Author: Pavel Morozkin
 // Date: August 18th 2013
 // Revised: August 18th 2013
@@ -20,30 +20,49 @@
 //
 // Copyright (c) 2013, Pavel Morozkin. All rights reserved.
 //*******************************************************************************
-#ifndef _CODEWORD_FIFO_T_
-#define _CODEWORD_FIFO_T_
+#ifndef _CHANNEL_BE_T_
+#define _CHANNEL_BE_T_
 
 #include "codeword_t.h"
 
-typedef struct codeword_fifo codeword_fifo_base_t;
-typedef codeword_fifo_base_t* codeword_fifo_t;
+#include <stdio.h>
 
-struct codeword_fifo
-{
-	codeword_t* fifo;
-	int codeword_size;
-	int fifo_size;
-	int length;
+#define SELF channel_be_t self
+typedef struct channel_be_be channel_be_base_t;
+typedef channel_be_base_t* channel_be_t;
+
+struct channel_be_be {
+	int bits_to_error;
+	int errors_quantity;
+	int erase_errors_quantity;
+	double ber;
+	FILE* log;
+	int bits_transferred_cnt;
+	int bits_corrupted_cnt;
+	int codewords_transferred_cnt;
+	int codewords_corrupted_cnt;
+	int (*start) (SELF);
+	int (*stop) (SELF);
+	codeword_t (*transfer) (SELF, codeword_t codeword);
+
+	/* Options. */
+	char channel_created_with_q;
 };
 
-void codeword_fifo_init (codeword_fifo_t const self);
-codeword_fifo_t codeword_fifo_create(int fifo_size, int codeword_size);
-void codeword_fifo_deinit (codeword_fifo_t self);
-void codeword_fifo_destroy (codeword_fifo_t self);
+void channel_be_init (SELF);
+void channel_be_deinit (SELF);
 
-void codeword_fifo_print (codeword_fifo_t self);
-codeword_fifo_t codeword_fifo_put (codeword_fifo_t fifo, codeword_t element);
-codeword_t codeword_fifo_get (codeword_fifo_t fifo);
-void reset_codeword_fifo (codeword_fifo_t fifo);
+channel_be_t channel_be_create(FILE* log, double ber);
+channel_be_t channel_be_create_q(FILE* log, int errors_quantity, int erase_errors_quantity);
+
+void channel_be_destroy (SELF);
+
+int channel_be_start (SELF);
+int channel_be_stop (SELF);
+codeword_t channel_be_transfer (SELF, codeword_t codeword);
+
+int channel_be_get_erase_errors_quantity(SELF);
+
+#undef SELF
 
 #endif

@@ -1,9 +1,9 @@
 //*******************************************************************************
 // Title: Communication System Modeler v.1.1
-// File: codec_bch.cpp
+// File: channel_be.h
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -20,9 +20,9 @@
 //
 // Copyright (c) 2013, Pavel Morozkin. All rights reserved.
 //*******************************************************************************
-#include "codec_bch.h"
+#ifndef _CHANNEL_BE_
+#define _CHANNEL_BE_
 
-int dummy()
-{
-	return 0;
-}
+#include "channel_be_t.h"
+
+#endif

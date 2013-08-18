@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: common_u.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -191,8 +191,13 @@ void loadbar(unsigned int x, unsigned int n, unsigned int w)
 	float ratio    =  x/(float)n;
 	int c =  (int)(ratio * w);
 
-	std::cout << "Simulation in progress: "<< std::setw(3) << (int)(ratio*100) << "% [";
+	std::cout << "[";
 	for ( int x=0; x<c; x++) std::cout << "=";
 	for (unsigned int x=c; x<w; x++) std::cout << " ";
-	std::cout << "]\r" << std::flush;
+	std::cout << "] " << std::setw(3) << (int)(ratio*100) << "%\r" << std::flush;
+}
+
+int invert_bit(int bit)
+{
+	return bit ? 0 : 1;
 }

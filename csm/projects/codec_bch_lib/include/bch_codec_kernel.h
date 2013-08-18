@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: bch_codec_kernel.h
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -36,6 +36,10 @@ struct bch_codec_kernel_vars
 	int             received_codeword[1048576], data[1048576], bb[548576];
 	int             seed;
 	int             number_of_errors, error_positions[1024], decerror; //= 0;
+	unsigned int	founded_errors;
+	unsigned int	corrected_errors;
+	unsigned int	erase_errors_q;
+	unsigned int	corrected_errors_nonerased_positions;
 };
 
 bch_codec_kernel_vars_t bch_codec_kernel_vars_create ();

@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{31037040-AC20-4566-9ACF-081245C6D11A}</ProjectGuid>
+    <ProjectGuid>{3B6F018F-23D9-45F8-92BA-3CA295FB0D4B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>kernel_lib</RootNamespace>
+    <RootNamespace>channel_be_lib</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -49,16 +49,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\test_engine_lib\include;..\codec_bch_lib\include;..\codec_cnv_lib\include;..\channel_bs_lib\include;..\channel_be_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>..\..\build\bin\Debug\common_lib;..\..\build\bin\Debug\test_engine_lib;..\..\build\bin\Debug\codec_bch_lib;..\..\build\bin\Debug\codec_cnv_lib;..\..\build\bin\Debug\channel_bs_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common_lib.lib;test_engine_lib.lib;codec_bch_lib.lib;codec_cnv_lib.lib;channel_bs_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -69,7 +64,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\test_engine_lib\include;..\codec_bch_lib\include;..\codec_cnv_lib\include;..\channel_bs_lib\include;..\channel_be_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -77,22 +71,16 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>..\..\build\bin\Release\common_lib;..\..\build\bin\Release\test_engine_lib;..\..\build\bin\Release\codec_bch_lib;..\..\build\bin\Release\codec_cnv_lib;..\..\build\bin\Release\channel_bs_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common_lib.lib;test_engine_lib.lib;codec_bch_lib.lib;codec_cnv_lib.lib;channel_bs_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\kernel.h" />
+    <ClInclude Include="include\channel_be.h" />
+    <ClInclude Include="include\channel_be_t.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\kernel.cpp" />
-    <ClCompile Include="src\kernel_base_mode.cpp" />
-    <ClCompile Include="src\kernel_bch_mode.cpp" />
-    <ClCompile Include="src\kernel_cnv_mode.cpp" />
+    <ClCompile Include="src\channel_be.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

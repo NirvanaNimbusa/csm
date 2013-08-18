@@ -54,13 +54,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\test_engine_lib\include;..\codec_bch_lib\include;..\codec_cnv_lib\include;..\channel_bs_lib\include;..\kernel_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\test_engine_lib\include;..\codec_bch_lib\include;..\codec_cnv_lib\include;..\channel_bs_lib\include;..\channel_be_lib\include;..\kernel_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\build\bin\Debug\kernel_lib;..\..\build\bin\Debug\common_lib;..\..\build\bin\Debug\test_engine_lib;..\..\build\bin\Debug\codec_bch_lib;..\..\build\bin\Debug\codec_cnv_lib;..\..\build\bin\Debug\channel_bs_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common_lib.lib;test_engine_lib.lib;codec_bch_lib.lib;codec_cnv_lib.lib;channel_bs_lib.lib;kernel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\build\bin\Debug\kernel_lib;..\..\build\bin\Debug\common_lib;..\..\build\bin\Debug\test_engine_lib;..\..\build\bin\Debug\codec_bch_lib;..\..\build\bin\Debug\codec_cnv_lib;..\..\build\bin\Debug\channel_bs_lib;..\..\build\bin\Debug\channel_be_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>common_lib.lib;test_engine_lib.lib;codec_bch_lib.lib;codec_cnv_lib.lib;channel_bs_lib.lib;channel_be_lib.lib;kernel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>10000000</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\test_engine_lib\include;..\codec_bch_lib\include;..\codec_cnv_lib\include;..\channel_bs_lib\include;..\kernel_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\test_engine_lib\include;..\codec_bch_lib\include;..\codec_cnv_lib\include;..\channel_bs_lib\include;..\channel_be_lib\include;..\kernel_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -81,8 +81,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <StackReserveSize>10000000</StackReserveSize>
-      <AdditionalLibraryDirectories>..\..\build\bin\Release\kernel_lib;..\..\build\bin\Release\common_lib;..\..\build\bin\Release\test_engine_lib;..\..\build\bin\Release\codec_bch_lib;..\..\build\bin\Release\codec_cnv_lib;..\..\build\bin\Release\channel_bs_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common_lib.lib;test_engine_lib.lib;codec_bch_lib.lib;codec_cnv_lib.lib;channel_bs_lib.lib;kernel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\build\bin\Release\kernel_lib;..\..\build\bin\Release\common_lib;..\..\build\bin\Release\test_engine_lib;..\..\build\bin\Release\codec_bch_lib;..\..\build\bin\Release\codec_cnv_lib;..\..\build\bin\Release\channel_bs_lib;..\..\build\bin\Release\channel_be_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>common_lib.lib;test_engine_lib.lib;codec_bch_lib.lib;codec_cnv_lib.lib;channel_bs_lib.lib;channel_be_lib.lib;kernel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

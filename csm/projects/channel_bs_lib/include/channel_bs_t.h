@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: channel_bs_t.h
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -20,8 +20,8 @@
 //
 // Copyright (c) 2013, Pavel Morozkin. All rights reserved.
 //*******************************************************************************
-#ifndef _CHANNEL_T_
-#define _CHANNEL_T_
+#ifndef _CHANNEL_BS_T_
+#define _CHANNEL_BS_T_
 
 #include "codeword_t.h"
 
@@ -38,6 +38,8 @@ struct channel_bs_bs {
 	FILE* log;
 	int bits_transferred_cnt;
 	int bits_corrupted_cnt;
+	int codewords_transferred_cnt;
+	int codewords_corrupted_cnt;
 	int (*start) (SELF);
 	int (*stop) (SELF);
 	codeword_t (*transfer) (SELF, codeword_t codeword);

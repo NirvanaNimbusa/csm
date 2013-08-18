@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: bch_decoder_kernel_t.h
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -20,8 +20,8 @@
 //
 // Copyright (c) 2013, Pavel Morozkin. All rights reserved.
 //*******************************************************************************
-#ifndef _DECODER_KERNEL_T_
-#define _DECODER_KERNEL_T_
+#ifndef _BCH_DECODER_KERNEL_T_
+#define _BCH_DECODER_KERNEL_T_
 
 #include "common.h"
 
@@ -50,13 +50,23 @@ struct bch_decoder_kernel {
 void bch_decoder_kernel_init (SELF);
 void bch_decoder_kernel_deinit (SELF);
 
-bch_decoder_kernel_t bch_decoder_kernel_create (FILE* log, int galois_field_degree, int code_length, int inf_symbols_q, int error_correction);
+bch_decoder_kernel_t bch_decoder_kernel_create 
+(
+	FILE* log,
+	int galois_field_degree,
+	int code_length,
+	int inf_symbols_q,
+	int error_correction
+);
 void bch_decoder_kernel_destroy (SELF);
 
 frame_t bch_decoder_kernel_decode (SELF, codeword_t codeword_out, codeword_t codeword_in);
 
 int bch_decoder_kernel_start (SELF);
 int bch_decoder_kernel_stop (SELF);
+
+unsigned int bch_decoder_kernel_get_founded_errors(SELF);
+unsigned int bch_decoder_kernel_get_recovered_bits(SELF);
 
 #undef SELF
 

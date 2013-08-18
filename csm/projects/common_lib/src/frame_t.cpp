@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: frame_t.cpp
 // Author: Pavel Morozkin
-// Date: August 17th 2013
-// Revised: August 17th 2013
+// Date: August 18th 2013
+// Revised: August 18th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -75,6 +75,7 @@ char* frame_to_str(frame_t self)
 		str[i] = 0;
 		return str;
 	}
+	return NULL;
 }
 
 int frame_cmp (frame_t a, frame_t b)
