@@ -215,8 +215,8 @@ int main(int argc, char **argv)
 	/* special case: '--version' takes precedence error reporting */
 	if (version->count > 0)
 	{
-		printf("%s - Communication System Modeling tool. v.1.1.\n",progname);
-		printf("August 2013, Pavel Morozkin (pavel.morozkin@guap.ru)\n");
+		printf("%s - Communication System Modeler v.1.1.\n",progname);
+		printf("August 2013, Pavel Morozkin (pavelmorozkin@yandex.ru)\n");
 		exitcode=0;
 		goto exit;
 	}
