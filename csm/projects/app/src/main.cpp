@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: main.cpp
 // Author: Pavel Morozkin
-// Date: August 18th 2013
-// Revised: August 18th 2013
+// Date: August 21th 2013
+// Revised: August 21th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -122,6 +122,18 @@ int app_run(int galois_field_degree,
 	return 0;
 }
 
+// Returns filename portion of the given path
+// Returns empty string if path is directory
+char *get_file_name(char *path)
+{
+	char *filename = strrchr(path, '\\');
+	if (filename == NULL)
+		filename = path;
+	else
+		filename++;
+	return filename;
+}
+
 int main(int argc, char **argv)
 {
 	struct arg_int *galois_field_degree  =
@@ -174,7 +186,7 @@ int main(int argc, char **argv)
 		help,
 		version,
 		end};
-	const char* progname = strrchr(argv[0], '\\') + 1;
+	const char* progname = get_file_name(argv[0]);
 	int nerrors;
 	int exitcode=0;
 
