@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: cnv_encoder_t.cpp
 // Author: Pavel Morozkin
-// Date: August 21th 2013
-// Revised: August 21th 2013
+// Date: August 28th 2013
+// Revised: August 28th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for

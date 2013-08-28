@@ -2,8 +2,8 @@
 // Title: Communication System Modeler v.1.1
 // File: main.cpp
 // Author: Pavel Morozkin
-// Date: August 21th 2013
-// Revised: August 21th 2013
+// Date: August 28th 2013
+// Revised: August 28th 2013
 //*******************************************************************************
 // NOTE:
 // The author is not responsible for any malfunctioning of this program, nor for
@@ -24,6 +24,7 @@
 #include "kernel.h"
 #include <string.h>
 
+/* Функция запуска приложения. */
 int app_run(int galois_field_degree,
 	int bch_code_length,
 	int error_correction,
@@ -42,6 +43,7 @@ int app_run(int galois_field_degree,
 {
 	int i;
 
+	/* Для всех файлов. */
 	for (i=0; i<ninfiles; i++)
 	{
 		if(cnv_only && bch_only)
@@ -52,6 +54,7 @@ int app_run(int galois_field_degree,
 
 		printf("Simulation of transfer \'%s\' data is started...\n", infiles[i]);
 
+		/* Выбор режима зауска ядра. */
 		if(cnv_only)
 		{
 			kernel_run(
